@@ -35,3 +35,10 @@ jobs:
           docker build -t $ECR_REGISTRY/charanecr:github.sha -f Dockerfile.yml .
           docker push $ECR_REGISTRY/charanecr:github.sha
           echo "image=$ECR_REGISTRY/charanecr:github.sha" >> $GITHUB_OUTPUT
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name eks --region ap-southeast-1
+ 
+      - name: Deploy to EKS
+        run: |
+         kubectl apply -f deployment.yml --validate=false
+         kubectl apply -f service.yml --validate=false
